@@ -8,22 +8,22 @@
   13 JSON-lines entries in artifacts/requests.jsonl, one per request above
 
   most recent entry, verbatim:
-  {"trace_id": "trc_537cb954719f4f4b", "ts": "2026-09-13T08:49:58Z", "endpoint": "POST /ask", "session_id": "http-pii", "latency_ms": 97.501, "stages": [{"stage": "intake", "ms": 0.479}, {"stage": "crew", "ms": 96.742}, {"stage": "response", "ms": 0.27}], "operation": "POST /ask", "request_text": "My PAN is [PAN_REDACTED], Aadhaar [AADHAAR_REDACTED] and account [ACCOUNT_REDACTED]. What is the status of CRED-LN-0009?", "request_chars": 109, "pii_masked": {"pan": 1, "aadhaar": 1, "bank_account": 1}, "answer_type": "policy_and_status", "grounded": true, "citations": ["KB-004"], "tools_used": ["search_loan_policy_kb", "check_loan_application_status"], "guardrail_flags": ["pii_masked:aadhaar", "pii_masked:bank_account", "pii_masked:pan"], "blocked": false, "record_id": "CRED-LN-0009", "escalation_recommended": true, "confidence": 0.5549, "crew_model_calls": 5, "budget": {"llm_calls": 8, "prompt_tokens": 5489, "completion_tokens": 1519, "total_tokens": 7008, "cost_inr": 1.0512, "exhausted": false, "caps": {"max_request_tokens": 600, "max_total_tokens": 12000, "max_cost_inr": 2.0}}, "review_approved": true, "resolved_question": "My PAN is [PAN_REDACTED], Aadhaar [AADHAAR_REDACTED] and account [ACCOUNT_REDACTED]. What is the status of CRED-LN-0009?", "carried_record_id": null, "history_length": 0, "cache_hit": false, "cache": {"entries": 4, "hits": 0, "misses": 4, "lookups": 4, "hit_rate": 0.0, "generation_calls": 4, "retrieval_calls": 4, "llm_calls": 4}, "http_status": 200, "status": "ok"}
+  {"trace_id": "trc_d6e428ee1e5a42a6", "ts": "2026-09-13T17:55:08Z", "endpoint": "POST /ask", "session_id": "http-pii", "latency_ms": 126.329, "stages": [{"stage": "intake", "ms": 0.44}, {"stage": "crew", "ms": 125.595}, {"stage": "response", "ms": 0.283}], "operation": "POST /ask", "request_text": "My PAN is [PAN_REDACTED], Aadhaar [AADHAAR_REDACTED] and account [ACCOUNT_REDACTED]. What is the status of CRED-LN-0009?", "request_chars": 109, "pii_masked": {"pan": 1, "aadhaar": 1, "bank_account": 1}, "answer_type": "policy_and_status", "grounded": true, "citations": ["KB-004"], "tools_used": ["search_loan_policy_kb", "check_loan_application_status"], "guardrail_flags": ["pii_masked:aadhaar", "pii_masked:bank_account", "pii_masked:pan"], "blocked": false, "record_id": "CRED-LN-0009", "escalation_recommended": true, "confidence": 0.5549, "crew_model_calls": 5, "budget": {"llm_calls": 8, "prompt_tokens": 5487, "completion_tokens": 1519, "total_tokens": 7006, "cost_inr": 1.0509, "exhausted": false, "caps": {"max_request_tokens": 600, "max_total_tokens": 12000, "max_cost_inr": 2.0}}, "review_approved": true, "resolved_question": "My PAN is [PAN_REDACTED], Aadhaar [AADHAAR_REDACTED] and account [ACCOUNT_REDACTED]. What is the status of CRED-LN-0009?", "carried_record_id": null, "history_length": 0, "cache_hit": false, "cache": {"entries": 4, "hits": 0, "misses": 4, "lookups": 4, "hit_rate": 0.0, "generation_calls": 4, "retrieval_calls": 4, "llm_calls": 4}, "http_status": 200, "status": "ok"}
 
   every entry carries a trace id and timing metadata:
-    trc_212934aec86b4a74  GET /health            http=200       4.36ms  status=ok        stages=['response']
-    trc_20e25ec7770b4320  POST /ask              http=200     101.18ms  status=ok        stages=['intake', 'crew', 'response']
-    trc_e37f63d9a2f74f12  POST /ask              http=200      59.05ms  status=ok        stages=['intake', 'crew', 'response']
-    trc_82ee8ec621fa4f67  POST /ask              http=200      70.05ms  status=ok        stages=['intake', 'crew', 'response']
-    trc_657055af5ec44b79  POST /add-document     http=200      79.61ms  status=ok        stages=['response']
-    trc_b89ee02cea25410b  POST /ask              http=200      78.96ms  status=ok        stages=['intake', 'crew', 'response']
-    trc_eb9a2a8c36234d21  POST /ask              http=422       0.79ms  status=error     stages=['response']
-    trc_2084b8dfbb0c41ce  WS /ws/chat            http=-        94.87ms  status=ok        stages=['intake', 'crew']
-    trc_cc0e447359614d4f  WS /ws/chat            http=-       115.23ms  status=ok        stages=['intake', 'crew']
-    trc_4bbf5d93ebe24c2f  GET /health            http=200       1.82ms  status=ok        stages=['response']
-    trc_e03467c5f26746a1  WS /ws/chat            http=-        90.73ms  status=ok        stages=['intake', 'crew']
-    trc_ea1b6ccf8f294ce8  POST /ask              http=413       4.00ms  status=rejected  stages=['intake', 'budget_rejected', 'response']
-    trc_537cb954719f4f4b  POST /ask              http=200      97.50ms  status=ok        stages=['intake', 'crew', 'response']
+    trc_6b511c232445444c  GET /health            http=200       3.06ms  status=ok        stages=['response']
+    trc_4ac29fcf3b714e4d  POST /ask              http=200      93.89ms  status=ok        stages=['intake', 'crew', 'response']
+    trc_bacbbf30c52f4839  POST /ask              http=200      54.78ms  status=ok        stages=['intake', 'crew', 'response']
+    trc_74b1dea88ad042d0  POST /ask              http=200      68.88ms  status=ok        stages=['intake', 'crew', 'response']
+    trc_976cfce6981a42c8  POST /add-document     http=200      68.31ms  status=ok        stages=['response']
+    trc_1cb1f1f587684d99  POST /ask              http=200      81.59ms  status=ok        stages=['intake', 'crew', 'response']
+    trc_fa6e3e68da1d4582  POST /ask              http=422       0.51ms  status=error     stages=['response']
+    trc_8b78cb107d944e9f  WS /ws/chat            http=-       125.17ms  status=ok        stages=['intake', 'crew']
+    trc_8e7db024f14246a7  WS /ws/chat            http=-        90.83ms  status=ok        stages=['intake', 'crew']
+    trc_3b7511cbee8c4c3b  GET /health            http=200       2.35ms  status=ok        stages=['response']
+    trc_cd9b5a68ecb9423f  WS /ws/chat            http=-        95.47ms  status=ok        stages=['intake', 'crew']
+    trc_526a428c605c4c5a  POST /ask              http=413       3.13ms  status=rejected  stages=['intake', 'budget_rejected', 'response']
+    trc_d6e428ee1e5a42a6  POST /ask              http=200     126.33ms  status=ok        stages=['intake', 'crew', 'response']
 
   entries anywhere in the file containing raw fixed-format PII: 0
   logged request_text : My PAN is [PAN_REDACTED], Aadhaar [AADHAAR_REDACTED] and account [ACCOUNT_REDACTED]. What is the status of CRED-LN-0009?

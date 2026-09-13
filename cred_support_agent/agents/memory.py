@@ -26,7 +26,6 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 # warning is expected, and says it does not need to be silenced - so it is left
 # visible. The class works correctly for in-process session memory.
 
-from cred_support_agent.schemas import SupportResponse
 
 _RECORD_ID = re.compile(r"\b(CRED-LN-\d{4})\b", re.IGNORECASE)
 
@@ -56,11 +55,6 @@ def reset_session(session_id: str) -> None:
 def clear_all_sessions() -> None:
     with _LOCK:
         _SESSIONS.clear()
-
-
-def session_ids() -> List[str]:
-    with _LOCK:
-        return sorted(_SESSIONS)
 
 
 def session_turn_count(session_id: str) -> int:
@@ -146,11 +140,3 @@ class ConversationService:
     @staticmethod
     def reset(session_id: str) -> None:
         reset_session(session_id)
-
-
-def default_answer_fn(question: str, history: List[Any], session_id: str) -> tuple[str, SupportResponse]:
-    """The crew, behind the memory layer."""
-    from cred_support_agent.agents.crew import answer_question
-
-    result = answer_question(question)
-    return result.response.answer, result.response

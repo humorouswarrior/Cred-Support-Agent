@@ -368,13 +368,15 @@ My PAN is ABCDE1234F. What is the status of my loan application CRED-LN-0009?
 **Expect:**
 
 ```
-agent> Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of
-INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff
-of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a
-Cred specialist. Cred support escalates a loan application when it is flagged for fraud review or
-when it has been ageing in the queue beyond the service window for its stage. A Cred loan
-application moves through five states: Submitted, Under Review, Approved or Rejected, and finally
-Disbursed. [source: KB-014, KB-013]
+agent> Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR
+       1,270,000. It was created 24 days ago and carries an escalation score of 0.9 against a
+       cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for
+       manual review by a Cred specialist.
+
+       Cred support escalates a loan application when it is flagged for fraud review or when it
+       has been ageing in the queue beyond the service window for its stage. A Cred loan
+       application moves through five states: Submitted, Under Review, Approved or Rejected, and
+       finally Disbursed. [source: KB-014, KB-013]
   answer_type            policy_and_status
   resolved_question      My PAN is [PAN_REDACTED]. What is the status of my loan application CRED-LN-0009?
   tools_used             ['search_loan_policy_kb', 'check_loan_application_status']

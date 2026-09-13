@@ -120,10 +120,6 @@ def embed(texts: Sequence[str]) -> List[List[float]]:
     return get_embedder().encode(texts)
 
 
-def embed_one(text: str) -> List[float]:
-    return embed([text])[0]
-
-
 def cosine_similarity(a: Sequence[float], b: Sequence[float]) -> float:
     dot = sum(x * y for x, y in zip(a, b))
     na = math.sqrt(sum(x * x for x in a)) or 1.0

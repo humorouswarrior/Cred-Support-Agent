@@ -16,7 +16,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sys
+import textwrap
 import uuid
 
 import _common  # puts the project root on sys.path
@@ -24,6 +26,23 @@ import _common  # puts the project root on sys.path
 assert _common.PROJECT_ROOT.exists()
 
 HELP = __doc__.split("Commands inside the chat:")[1].rstrip()
+
+def format_answer(answer: str, label_width: int = 7) -> str:
+    """Wrap the reply to the window, keeping its paragraphs, so it stays readable."""
+    indent = " " * label_width
+    width = max(shutil.get_terminal_size((100, 24)).columns - 2, 50)
+    blocks = []
+    for number, paragraph in enumerate(answer.split("\n\n")):
+        blocks.append(
+            textwrap.fill(
+                " ".join(paragraph.split()),
+                width=width,
+                initial_indent="" if number == 0 else indent,
+                subsequent_indent=indent,
+            )
+        )
+    return "\n\n".join(blocks)
+
 
 def _colours_enabled() -> bool:
     """Colour only on a real terminal, and never when NO_COLOR is set.
@@ -96,7 +115,7 @@ def run_in_process(debug: bool) -> None:
 
         response = result["response"]
         colour = YELLOW if response.answer_type == "refusal" else CYAN
-        print(f"{colour}agent>{RESET} {response.answer}")
+        print(f"{colour}agent>{RESET} {format_answer(response.answer)}")
         if debug:
             review = result.get("review") or {}
             run = result["result"]
@@ -163,7 +182,7 @@ def run_over_websocket(url: str, debug: bool) -> None:
                 print(f"{RED}{frame['type']}:{RESET} {frame.get('detail')}")
                 continue
             colour = YELLOW if frame["answer_type"] == "refusal" else CYAN
-            print(f"{colour}agent>{RESET} {frame['answer']}")
+            print(f"{colour}agent>{RESET} {format_answer(frame['answer'])}")
             if debug:
                 shown = {k: frame.get(k) for k in (
                     "answer_type", "resolved_question", "tools_used", "citations",

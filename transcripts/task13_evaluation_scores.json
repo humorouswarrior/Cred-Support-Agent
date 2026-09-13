@@ -238,7 +238,7 @@
       "query": "What is the status of my loan application CRED-LN-0007?",
       "topic": "loan_application_lifecycle",
       "expectation": "status_lookup",
-      "answer": "Application CRED-LN-0007 (Auto Loan) is currently 'Approved' for a requested amount of INR 1,941,000. It was created 26 day(s) ago and carries an escalation score of 0.4333 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-013]",
+      "answer": "Application CRED-LN-0007 (Auto Loan) is currently 'Approved' for a requested amount of INR 1,941,000. It was created 26 days ago and carries an escalation score of 0.4333 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track.\n\nA Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-013]",
       "answer_type": "policy_and_status",
       "citations": [
         "KB-013"

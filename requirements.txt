@@ -6,7 +6,6 @@
 crewai==1.15.21
 chromadb==1.1.1
 sentence-transformers==6.0.1
-langchain==1.4.0
 langchain-core==1.6.3
 autogen-agentchat==0.7.5
 autogen-core==0.7.5

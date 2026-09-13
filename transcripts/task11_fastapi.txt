@@ -41,9 +41,9 @@ registered routes (response model):
 }
 
 --- POST /ask (AskRequest -> AskResponse) ---
-  HTTP 200   X-Trace-Id: trc_20e25ec7770b4320
+  HTTP 200   X-Trace-Id: trc_4ac29fcf3b714e4d
 {
-  "trace_id": "trc_20e25ec7770b4320",
+  "trace_id": "trc_4ac29fcf3b714e4d",
   "session_id": "http-1",
   "response": {
     "answer": "Every Cred applicant must complete KYC with one proof of identity, one proof of address and one recent photograph before any account or loan is activated. [source: KB-004]",
@@ -74,13 +74,15 @@ registered routes (response model):
 
 --- POST /ask (status lookup) ---
   answer_type=policy_and_status  review approved=True
-  answer: Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-014, KB-005, KB-010]
+  answer: Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 days ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist.
+
+Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-014, KB-005, KB-010]
 
 --- POST /add-document (AddDocumentRequest -> AddDocumentResponse) ---
   before: I don't know. I could not find anything in the Cred policy knowledge base that supports an
   HTTP 200
   {
-    "trace_id": "trc_657055af5ec44b79",
+    "trace_id": "trc_976cfce6981a42c8",
     "doc_id": "KB-101",
     "indexed_chunks": {
       "fixed_overlap": 2,
@@ -99,10 +101,10 @@ registered routes (response model):
 
 --- WEBSOCKET /ws/chat: multi-turn, malformed frame, abrupt disconnect ---
   <- ready
-  -> turn 1 [policy_and_status] Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an 
+  -> turn 1 [policy_and_status] Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 days ago and carries an es
   -> malformed frame answered with type=error; socket still open
   -> turn 2 resolved as 'Is that one escalated (application CRED-LN-0009)?'
-     Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an 
+     Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 days ago and carries an es
   (client disconnects mid-conversation: WebSocketDisconnect is caught)
 
   after the disconnect the server keeps serving:

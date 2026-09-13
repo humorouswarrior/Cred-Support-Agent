@@ -49,7 +49,7 @@ from autogen_core.models import (
 from autogen_core.tools import Tool, ToolSchema
 from pydantic import BaseModel
 
-from cred_support_agent.retrieval.generation import extract_citations, is_refusal
+from cred_support_agent.retrieval.generation import PARAGRAPH_BREAK, extract_citations, is_refusal
 from cred_support_agent.safety.guardrails import check_groundedness
 from cred_support_agent.schemas import ReviewVerdict
 from cred_support_agent.text_utils import split_sentences
@@ -97,6 +97,17 @@ COMPLIANCE_RULES: List[Dict[str, Any]] = [
 ]
 
 _CITATION_BLOCK = re.compile(r"\s*\[source:[^\]]*\]\s*$")
+
+
+def _rejoin(draft: str, kept: Sequence[str]) -> str:
+    """Reassemble the surviving sentences in the draft's own paragraph layout."""
+    surviving = list(kept)
+    paragraphs = []
+    for block in _CITATION_BLOCK.sub("", draft).strip().split("\n\n"):
+        in_block = [s for s in split_sentences(block) if s in surviving]
+        if in_block:
+            paragraphs.append(" ".join(in_block))
+    return PARAGRAPH_BREAK.join(paragraphs) if paragraphs else " ".join(surviving)
 
 
 def review_sentences(draft: str, contexts: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
@@ -189,7 +200,7 @@ def edit_draft(
         for c in (finding.get("citations") or [])
         if c in by_doc and any(check_groundedness(t, by_doc[c]).allowed for t in kept)
     ]
-    revised = " ".join(kept) + (f" [source: {', '.join(citations)}]" if citations else "")
+    revised = _rejoin(draft, kept) + (f" [source: {', '.join(citations)}]" if citations else "")
     return ReviewVerdict(
         approved=False,
         final_answer=revised,
