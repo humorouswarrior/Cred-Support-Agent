@@ -1,5 +1,5 @@
 # Runs the Cred Domain Support Agent identically on any machine with Docker:
-# Linux, macOS (Intel or Apple Silicon) and Windows.
+# Linux, macOS and Windows.
 #
 #   docker build -t cred-support-agent .
 #   docker run --rm --network none cred-support-agent                          # every task + acceptance check, no network

@@ -5,9 +5,9 @@
 key = normalised query text (casefold, collapse whitespace, strip end punctuation)
 
 call                    cached  vector retrievals  LLM calls         ms
-first ask               False   1                  1             24.618
-identical repeat        True    1                  1              0.010
-different surface form  True    1                  1              0.005
+first ask               False   1                  1             46.474
+identical repeat        True    1                  1              0.007
+different surface form  True    1                  1              0.003
 
 BEFORE/AFTER: three asks cost 1 vector retrieval and 1 grounded-generation LLM
 call; the two cache hits avoided 2 retrievals and 2 LLM calls.

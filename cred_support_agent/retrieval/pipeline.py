@@ -83,13 +83,6 @@ def retrieve_context(
     }
 
 
-def retrieve_from_both(text: str, top_k: int = DEFAULT_TOP_K) -> Dict[str, Any]:
-    """Retrieve from both collections - used by the strategy comparison demo."""
-    from cred_support_agent.retrieval.indexing import COLLECTION_BY_STRATEGY
-
-    return {s: retrieve_context(text, strategy=s, top_k=top_k) for s in COLLECTION_BY_STRATEGY}
-
-
 # --------------------------------------------------------------------------
 # Cache (Task 16)
 # --------------------------------------------------------------------------

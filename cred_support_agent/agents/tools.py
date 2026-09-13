@@ -22,7 +22,7 @@ from cred_support_agent.config import (
     MAX_DAYS_SINCE_CREATED,
 )
 from cred_support_agent.data.dataset import LOAN_APPLICATIONS, get_application, percentile
-from cred_support_agent.safety.governance import LOOKUP_TOOL_NAME, RAG_TOOL_NAME, assert_tool_invocation
+from cred_support_agent.safety.governance import LOOKUP_TOOL_NAME, RAG_TOOL_NAME
 
 # --------------------------------------------------------------------------
 # Escalation score design (Task 6)
@@ -85,7 +85,6 @@ def check_loan_application_status(record_id: str) -> Dict[str, Any]:
     Returns ``status``, ``loan_amount_inr`` and ``escalation_score`` (plus the
     supporting fields a support agent needs to explain the score).
     """
-    assert_tool_invocation(LOOKUP_TOOL_NAME)
     record = get_application(record_id)
     threshold = escalation_threshold()
     if record is None:
@@ -163,7 +162,6 @@ def escalation_distribution() -> Dict[str, Any]:
 
 def search_loan_policy_kb(query: str) -> Dict[str, Any]:
     """Retrieve grounded policy context for a natural-language question."""
-    assert_tool_invocation(RAG_TOOL_NAME)
     # Goes through the cached grounded-generation step, so a repeated question
     # to the live crew is answered from cache instead of re-running retrieval and
     # composition. Status lookups are deliberately never cached: a record can

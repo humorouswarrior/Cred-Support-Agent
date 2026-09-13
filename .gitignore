@@ -61,3 +61,6 @@ desktop.ini
 .idea/
 *.swp
 *~
+
+# Private verification and defence notes, not part of the submission
+PREP_NOTES.md

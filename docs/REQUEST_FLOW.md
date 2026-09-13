@@ -340,7 +340,7 @@ writes its note for the Composer:
 
 ```json
 {"kind": "loan_status",
- "answer": "Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist.",
+ "answer": "Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 days ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist.",
  "record_id": "CRED-LN-0009", "status": "Under Review", "loan_amount_inr": 1270000,
  "escalation_score": 0.9, "escalation_recommended": true, "found": true,
  "tool": "check_loan_application_status"}
@@ -354,7 +354,7 @@ it emits the draft as that schema, with the status answer first and the policy a
 after it:
 
 ```json
-{"answer": "Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-014, KB-013]",
+{"answer": "Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 days ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist.\n\nCred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-014, KB-013]",
  "answer_type": "policy_and_status", "grounded": true,
  "citations": ["KB-014", "KB-013"],
  "tools_used": ["search_loan_policy_kb", "check_loan_application_status"],
@@ -380,7 +380,7 @@ its finding to the team:
 COMPLIANCE_FINDING
   sentence                                                              keep   support  problems
   1  Application CRED-LN-0009 (Auto Loan) is currently 'Under Review'…  yes    1.0      —
-  2  It was created 24 day(s) ago and carries an escalation score…     yes    1.0      —
+  2  It was created 24 days ago and carries an escalation score…     yes    1.0      —
   3  This application is above the escalation cutoff, so it is fl…     yes    1.0      —
   4  Cred support escalates a loan application when it is flagged…    yes    1.0      —
   5  A Cred loan application moves through five states: Submitted…     yes    1.0      —
@@ -449,7 +449,7 @@ loads the model and builds the index at start-up, so its first request is fast t
 ```json
 {"trace_id": "trc_c3712130c2f14d22", "session_id": "member-7",
  "response": {
-   "answer": "Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-014, KB-013]",
+   "answer": "Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 days ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist.\n\nCred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-014, KB-013]",
    "answer_type": "policy_and_status", "grounded": true, "citations": ["KB-014", "KB-013"],
    "tools_used": ["search_loan_policy_kb", "check_loan_application_status"],
    "record_id": "CRED-LN-0009", "escalation_recommended": true, "confidence": 0.4853,
@@ -528,7 +528,7 @@ and the gate finds 68 of 68 content words supported.
 **Delivered:**
 
 > Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested
-> amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score
+> amount of INR 1,270,000. It was created 24 days ago and carries an escalation score
 > of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so
 > it is flagged for manual review by a Cred specialist. Fixed-rate Personal and Business
 > Loans attract a 3 percent foreclosure charge on the outstanding principal if closed

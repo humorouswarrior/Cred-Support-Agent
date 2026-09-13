@@ -730,13 +730,15 @@ query text**: casefolded, with whitespace collapsed and trailing punctuation rem
 Counters show what each call actually did (`task16_caching.txt`):
 
 ```
-call                     cached  vector retrievals  LLM calls        ms
-first ask                False   1                  1            34.326
-identical repeat         True    1                  1             0.008
-different surface form   True    1                  1             0.004
+call                     cached  vector retrievals  LLM calls
+first ask                False   1                  1
+identical repeat         True    1                  1
+different surface form   True    1                  1
 ```
 
-Three asks cost **one** vector retrieval and **one** grounded-generation LLM call. The
+The transcript also times each call: the first takes tens of milliseconds, the two
+hits a few microseconds. Three asks cost **one** vector retrieval and **one**
+grounded-generation LLM call. The
 two cache hits avoided two retrievals and two LLM calls, and all three answers were
 identical. The same cache sits in the Retrieval Agent's tool, so a repeated question
 to the live crew is also served from cache. Application lookups are never cached,

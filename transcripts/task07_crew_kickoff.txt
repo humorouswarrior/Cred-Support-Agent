@@ -19,13 +19,17 @@ both tools invoked via crew.kickoff() on different sample queries:
      tools actually invoked : ['search_loan_policy_kb', 'check_loan_application_status']
      model calls            : 5
      answer_type            : policy_and_status
-     draft                  : Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-013]
+     draft                  : Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 days ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist.
+
+A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-013]
 
   Q: What is the status of CRED-LN-0002?
      tools actually invoked : ['search_loan_policy_kb', 'check_loan_application_status']
      model calls            : 5
      answer_type            : policy_and_status
-     draft                  : Application CRED-LN-0002 (Personal Loan) is currently 'Disbursed' for a requested amount of INR 631,000. It was created 6 day(s) ago and carries an escalation score of 0.1 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-005, KB-014, KB-010]
+     draft                  : Application CRED-LN-0002 (Personal Loan) is currently 'Disbursed' for a requested amount of INR 631,000. It was created 6 days ago and carries an escalation score of 0.1 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track.
+
+Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-005, KB-014, KB-010]
 
 ##############################################################################
 # CUSTOM LLM (crewai.llms.base_llm.BaseLLM) - SCHEMA-DRIVEN TOOL DISPATCH

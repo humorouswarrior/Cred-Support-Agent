@@ -148,18 +148,28 @@ def compose_status_answer(lookup: Dict[str, Any]) -> str:
         else "This application is below the escalation cutoff and is progressing on the "
         "normal service track."
     )
+    days = lookup["days_since_created"]
+    age = "today" if days == 0 else f"{days} day ago" if days == 1 else f"{days} days ago"
     return (
         f"Application {lookup['record_id']} ({lookup['category']}) is currently "
         f"'{lookup['status']}' for a requested amount of INR "
-        f"{lookup['loan_amount_inr']:,}. It was created "
-        f"{lookup['days_since_created']} day(s) ago and carries an escalation score of "
-        f"{lookup['escalation_score']} against a cutoff of "
+        f"{lookup['loan_amount_inr']:,}. It was created {age} and carries an escalation "
+        f"score of {lookup['escalation_score']} against a cutoff of "
         f"{lookup['escalation_threshold']}. {escalation_line}"
     )
 
 
+PARAGRAPH_BREAK = "\n\n"
+
+
 def merge_answers(policy_answer: str | None, status_answer: str | None) -> str:
-    """Response Composer behaviour: merge the two agent outputs into one reply."""
+    """Response Composer behaviour: merge the two agent outputs into one reply.
+
+    The status block and the policy block are separate paragraphs. A reply that
+    mixes "your application is under review" with the policy behind it is far
+    easier to read as two short paragraphs than as one long one, and the split
+    changes no wording, so the groundedness gate sees exactly the same claims.
+    """
     parts = [p.strip() for p in (status_answer, policy_answer) if p and p.strip()]
     if not parts:
         return FALLBACK_ANSWER
@@ -167,7 +177,7 @@ def merge_answers(policy_answer: str | None, status_answer: str | None) -> str:
     for part in parts:
         if part not in unique:
             unique.append(part)
-    return " ".join(unique)
+    return PARAGRAPH_BREAK.join(unique)
 
 
 _CITATION_BLOCK = re.compile(r"\[source:\s*([^\]]+)\]\s*$")

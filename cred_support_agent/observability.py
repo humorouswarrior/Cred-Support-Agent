@@ -90,10 +90,6 @@ _active_log: contextvars.ContextVar[RequestLog | None] = contextvars.ContextVar(
 )
 
 
-def current_log() -> RequestLog | None:
-    return _active_log.get()
-
-
 @contextmanager
 def request_log(endpoint: str, session_id: str = "default", trace_id: str | None = None) -> Iterator[RequestLog]:
     """Log exactly one JSON-lines entry for this request, success or failure.

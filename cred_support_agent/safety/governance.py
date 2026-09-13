@@ -57,25 +57,6 @@ class AutonomyViolation(PermissionError):
     """Raised when a tool is wired to, or invoked by, a role that may not hold it."""
 
 
-_current_agent_role: contextvars.ContextVar[str | None] = contextvars.ContextVar(
-    "cred_current_agent_role", default=None
-)
-
-
-@contextmanager
-def agent_scope(role: str) -> Iterator[None]:
-    """Mark the agent role that is currently executing (runtime enforcement)."""
-    token = _current_agent_role.set(role)
-    try:
-        yield
-    finally:
-        _current_agent_role.reset(token)
-
-
-def current_agent_role() -> str | None:
-    return _current_agent_role.get()
-
-
 def assert_tool_wiring(tool_name: str, agent_role: str) -> None:
     """Build-time check: refuse to attach a restricted tool to the wrong role."""
     allowed = TOOL_AUTONOMY_POLICY.get(tool_name)
@@ -84,26 +65,6 @@ def assert_tool_wiring(tool_name: str, agent_role: str) -> None:
     if agent_role not in allowed:
         raise AutonomyViolation(
             f"Least-autonomy policy violation: agent role {agent_role!r} may not hold "
-            f"tool {tool_name!r}. Permitted roles: {sorted(allowed)}."
-        )
-
-
-def assert_tool_invocation(tool_name: str) -> None:
-    """Runtime check: refuse a call made from an unauthorised agent scope.
-
-    An unset scope means the tool was called directly by trusted orchestration
-    code (a demo script or the API layer), which is permitted; what is blocked is
-    a *different* crew agent reaching for a tool it does not own.
-    """
-    allowed = TOOL_AUTONOMY_POLICY.get(tool_name)
-    if allowed is None:
-        return
-    role = current_agent_role()
-    if role is None:
-        return
-    if role not in allowed:
-        raise AutonomyViolation(
-            f"Least-autonomy policy violation: agent role {role!r} attempted to invoke "
             f"tool {tool_name!r}. Permitted roles: {sorted(allowed)}."
         )
 
