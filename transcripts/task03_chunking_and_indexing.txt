@@ -1,0 +1,29 @@
+
+##############################################################################
+# TASK 3 - TWO CHUNKING STRATEGIES, TWO CHROMADB COLLECTIONS
+##############################################################################
+========================================================================
+CHUNKING STRATEGIES + CHROMADB COLLECTIONS
+========================================================================
+fixed_overlap    collection=cred_kb_fixed_overlap      chunks=47   stored=47   avg_chars=210.8
+sentence         collection=cred_kb_sentence           chunks=28   stored=28   avg_chars=288.4
+embedding backend: sentence-transformers/all-MiniLM-L6-v2
+
+sample queries against BOTH collections:
+
+  query: What documents do I need for KYC?
+    [fixed_overlap]
+      KB-004 sim=0.5315 :: Every Cred applicant must complete KYC with one proof of identity, one proof of address ...
+      KB-011 sim=0.3989 :: A Cred joint account may be held by up to four holders, each of whom must complete KYC i...
+    [sentence]
+      KB-004 sim=0.5079 :: Every Cred applicant must complete KYC with one proof of identity, one proof of address ...
+      KB-011 sim=0.4269 :: A Cred joint account may be held by up to four holders, each of whom must complete KYC i...
+
+  query: Is there a penalty if I foreclose my personal loan early?
+    [fixed_overlap]
+      KB-008 sim=0.5301 :: foreclosure charge on the outstanding principal if closed within the first 12 months, dr...
+      KB-008 sim=0.4662 :: Floating-rate loans taken by an individual borrower carry no prepayment or foreclosure c...
+    [sentence]
+      KB-008 sim=0.5774 :: Floating-rate loans taken by an individual borrower carry no prepayment or foreclosure c...
+      KB-011 sim=0.4578 :: On a joint loan all co-applicants are jointly and severally liable for the full outstand...
+========================================================================

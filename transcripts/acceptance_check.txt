@@ -1,0 +1,63 @@
+====================================================================================================
+CRED DOMAIN SUPPORT AGENT - ACCEPTANCE CRITERIA
+====================================================================================================
+
+--- Part 1 ---
+  [PASS] dataset.py generates >=40 records meeting every structural threshold, design choices in README
+         48 records; categories={'Auto Loan': 11, 'Business Loan': 7, 'Education Loan': 8, 'Home Loan': 9, 'Personal Loan': 13}; statuses={'Approved': 8, 'Disbursed': 7, 'Rejected': 8, 'Submitted': 11, 'Under Review': 14}; fraud=20.83%; failing=none; README states seed/weights/range=True
+  [PASS] knowledge base has >=12 documents covering every required topic
+         14 documents in 14 files under data/knowledge_base/; missing topics: none
+  [PASS] both chunking strategies embedded and indexed into two separate ChromaDB collections, both retrieving sensibly
+         cred_kb_fixed_overlap (47 chunks) top-1 for sample=KB-004; cred_kb_sentence (28 chunks) top-1 for sample=KB-004
+  [PASS] grounded generation on >=5 in-scope queries plus 1 out-of-scope 'I don't know' fallback
+         5/5 answered; out-of-scope refused=True; threshold 0.4055 measured between out<=0.2002 and in>=0.6108
+  [PASS] precision/recall for BOTH collections on the same queries, per-query arithmetic, numbers-cited recommendation
+         fixed_overlap: P=0.5667 R=1.0 F1=0.6933; sentence: P=0.4667 R=1.0 F1=0.6267; recommended=fixed_overlap (numbers cited=True)
+
+--- Part 2 ---
+  [PASS] check_loan_application_status looks up a record and computes a designed, justified escalation_score
+         CRED-LN-0009 status=Under Review amount=1270000 score=0.9; 9 distinct values (not a boolean OR); threshold 0.4333 = 0.5 * (p80(days_since_created)=26.0 / 30)
+  [PASS] crew has Retrieval, Lookup and Composer agents; both tools invoked on different queries via .kickoff()
+         agents=['Retrieval Agent', 'Lookup Agent', 'Response Composer']; policy query invoked ['search_loan_policy_kb']; status query invoked ['search_loan_policy_kb', 'check_loan_application_status']
+  [PASS] multi-turn memory demonstrated, with a separate fresh-conversation transcript showing it absent
+         same session carried CRED-LN-0009; fresh session carried None (history_len=0); transcripts: ['task08_memory_multi_turn.txt', 'task08_memory_fresh_conversation.txt']
+  [PASS] every crew response validates against the declared Pydantic schema (response_format)
+         Response Composer response_format=SupportResponse; 3/3 responses validated
+  [PASS] input-side (PII, injection) and output-side (groundedness) guardrails each fire on a deliberate test
+         PII flags=['pii_masked:aadhaar', 'pii_masked:bank_account', 'pii_masked:pan']; injection blocked=True; ungrounded draft refused=True ['groundedness:unsupported_figure']
+
+--- Part 3 ---
+  [PASS] >=2 HTTP endpoints plus 1 WebSocket that survives a client disconnect, with Pydantic models
+         HTTP=['/add-document', '/ask', '/governance', '/health', '/logs', '/session/{session_id}/reset'] (all with response models=True); WS /ws/chat; after disconnect server serving=True, new client accepted=True
+  [PASS] every request produces one JSON-Lines log entry with a trace id; no raw fixed-format PII on disk
+         entries per request=[1, 1, 1, 1]; trace ids match X-Trace-Id=True; raw PII in log=False
+  [PASS] Accuracy, Grounding, Completeness, Safety per query for all 15 queries under MOCK_LLM, plus averages
+         15 queries judged by mock-llm/cred-judge-v1; averages={'accuracy': 5, 'grounding': 5, 'completeness': 4.267, 'safety': 5, 'overall': 4.817}
+
+--- Part 4 ---
+  [PASS] Autogen review approves a draft unchanged and revises a draft, structured verdicts, on sample queries
+         'Is there a prepayment penalty if I foreclose my loan early?' approved=True; 'What is the minimum balance I must maintain in a Cred savings account?' + planted claim approved=False, delivered: Cred savings accounts carry an average monthly balance requirement of ...
+  [PASS] least autonomy enforced: only the Lookup Agent can call the lookup tool
+         holders=['Lookup Agent']; wiring blocked for 2/2 other agents; runtime violation recorded=True; lookup executions=1
+  [PASS] risk classification under the Low/Medium/High scheme with justification
+         level=High (scheme: High = medical data, hiring decisions, financial data); justification 236 words
+  [PASS] runtime cost-budget cap rejects an oversized simulated request; every model stage is metered
+         rejected: request_token_cap (1000 > 600); model calls made=0; a normal request charged 8 calls / 7755 tokens across stages ['autogen-review', 'cred-mock-generation', 'cred-mock-llm'] (caps 12000 tokens, INR 2.0)
+  [PASS] response caching: real cache hit on a repeated query avoids the redundant LLM/tool call
+         miss then hit; (vector retrievals, LLM calls) before repeat=(1, 1), after repeat=(1, 1)
+
+--- Guidelines ---
+  [PASS] README states the Cred (Banking & FinTech) track at the top
+         # Cred Domain Support Agent (CrewAI) / **Track completed: Cred (Banking & FinTech).**
+  [PASS] MOCK_LLM default, zero API keys, CrewAI telemetry disabled
+         backend=mock; telemetry={'CREWAI_DISABLE_TELEMETRY': 'true', 'OTEL_SDK_DISABLED': 'true', 'CREWAI_TRACING_ENABLED': 'false'}; provider keys set=none; README confirms telemetry setting
+  [PASS] all four language-model stages are MOCK_LLM: crew, grounded generation, judge, review team
+         crew=MockLLM(BaseLLM), generation=MockGenerationLLM(BaseLLM), judge=MockJudgeLLM(BaseLLM), review=MockReviewClient
+  [PASS] tool dispatch uses the declared argument schema, not the tool name (the 'rag_lookup' trap)
+         record-id question -> zzz_status; policy question -> rag_lookup {'query': 'what are the KYC rules?'}
+  [PASS] tool output is read from model-generated messages, never the ReAct 'Observation:' template
+         system template containing 'Observation: the result of the action' yielded 0 observations
+
+====================================================================================================
+RESULT: 23/23 checks passed
+====================================================================================================

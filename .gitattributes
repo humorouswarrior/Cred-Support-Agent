@@ -1,0 +1,3 @@
+# Normalise line endings so a clone behaves the same on Windows, macOS and Linux.
+* text=auto eol=lf
+*.py text eol=lf

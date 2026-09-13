@@ -1,0 +1,50 @@
+
+##############################################################################
+# TASK 7 - CREWAI CREW: Retrieval Agent, Lookup Agent, Response Composer
+##############################################################################
+crew composition:
+  Retrieval Agent    tools=['search_loan_policy_kb']  response_format=None
+  Lookup Agent       tools=['check_loan_application_status']  response_format=None
+  Response Composer  tools=[]  response_format=SupportResponse
+
+both tools invoked via crew.kickoff() on different sample queries:
+
+  Q: What documents do I need to complete KYC?
+     tools actually invoked : ['search_loan_policy_kb']
+     model calls            : 4
+     answer_type            : policy
+     draft                  : Every Cred applicant must complete KYC with one proof of identity, one proof of address and one recent photograph before any account or loan is activated. [source: KB-004]
+
+  Q: What is the status of my loan application CRED-LN-0009?
+     tools actually invoked : ['search_loan_policy_kb', 'check_loan_application_status']
+     model calls            : 5
+     answer_type            : policy_and_status
+     draft                  : Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-013]
+
+  Q: What is the status of CRED-LN-0002?
+     tools actually invoked : ['search_loan_policy_kb', 'check_loan_application_status']
+     model calls            : 5
+     answer_type            : policy_and_status
+     draft                  : Application CRED-LN-0002 (Personal Loan) is currently 'Disbursed' for a requested amount of INR 631,000. It was created 6 day(s) ago and carries an escalation score of 0.1 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-005, KB-014, KB-010]
+
+##############################################################################
+# CUSTOM LLM (crewai.llms.base_llm.BaseLLM) - SCHEMA-DRIVEN TOOL DISPATCH
+##############################################################################
+declared tool schemas handed to the model:
+  check_loan_application_status: {"properties": {"record_id": {"description": "Cred loan application record identifier, formatted CRED-LN-0000.", "pattern": "^CRED-LN-\\d{4}$", "title": "Record Id", "type": "string"}}, "required": ["record_id"], "type": "object", "additionalProperties": false}
+  search_loan_policy_kb: {"properties": {"query": {"description": "Natural-language question about Cred lending, card or account policy.", "minLength": 8, "title": "Query", "type": "string"}}, "required": ["query"], "type": "object", "additionalProperties": false}
+
+dispatch decisions, made only from those declared schemas:
+  'What is the status of my loan application CRED-LN-0007?'
+    -> [{'id': 'call_76c030fe5f9c', 'name': 'check_loan_application_status', 'input': {'record_id': 'CRED-LN-0007'}}]
+  'How is the EMI calculated on a personal loan?'
+    -> [{'id': 'call_ec103d88e988', 'name': 'search_loan_policy_kb', 'input': {'query': 'How is the EMI calculated on a personal loan?'}}]
+  'check cred-ln-0012 for me'
+    -> [{'id': 'call_5f64a60ebe4b', 'name': 'check_loan_application_status', 'input': {'record_id': 'CRED-LN-0012'}}]
+
+the same decisions with the tools renamed (the status tool is now called
+'rag_lookup', the name the brief warns a substring matcher would misroute):
+  'status of CRED-LN-0007?'
+    -> [{'id': 'call_703d64e08884', 'name': 'rag_lookup', 'input': {'record_id': 'CRED-LN-0007'}}]
+  'what are the KYC rules?'
+    -> [{'id': 'call_234006d570d4', 'name': 'zzz_other', 'input': {'query': 'what are the KYC rules?'}}]

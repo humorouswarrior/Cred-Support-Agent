@@ -1,0 +1,63 @@
+# What the submission must contain is committed: dataset.py, data/knowledge_base/,
+# the application code, scripts/, tests/, transcripts/ (the graded evidence),
+# docs/ and README.md. Everything below is local, generated or not accepted.
+
+# Runtime state, rebuilt deterministically by scripts/run_all.py --reset
+# (vector store, request log, calibration, fallback home directory)
+artifacts/
+
+# Embedding model, downloaded once by bootstrap.py (~90 MB, not source)
+models/
+
+# Virtual environments and Python caches
+.venv*/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Secrets. Everything runs under MOCK_LLM with zero API keys; an optional real
+# backend reads its key from the environment, and a key must never be committed.
+.env
+.env.*
+*.key
+*.pem
+
+# The course brief is reference material, not part of the deliverable
+Cred_Capstone_Task_Summary.txt
+
+# The brief accepts no images, screenshots, PDFs, slides, video or audio
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.pdf
+*.ppt
+*.pptx
+*.mp4
+*.mov
+*.mp3
+*.wav
+
+# Logs and scratch output
+*.log
+nohup.out
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~

@@ -1,0 +1,155 @@
+
+##############################################################################
+# TASK 9 - STRUCTURED OUTPUT SCHEMA (Pydantic, response_format, validated in code)
+##############################################################################
+SupportResponse JSON schema:
+{
+  "additionalProperties": false,
+  "description": "The one response shape the Cred support crew is allowed to emit.",
+  "properties": {
+    "answer": {
+      "description": "Customer-facing answer text.",
+      "minLength": 1,
+      "title": "Answer",
+      "type": "string"
+    },
+    "answer_type": {
+      "description": "Which capability produced the answer.",
+      "enum": [
+        "policy",
+        "status",
+        "policy_and_status",
+        "refusal"
+      ],
+      "title": "Answer Type",
+      "type": "string"
+    },
+    "grounded": {
+      "description": "True when every claim is supported by retrieved context.",
+      "title": "Grounded",
+      "type": "boolean"
+    },
+    "citations": {
+      "description": "Knowledge-base doc ids backing the answer.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Citations",
+      "type": "array"
+    },
+    "tools_used": {
+      "description": "Tool names actually invoked for this turn.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Tools Used",
+      "type": "array"
+    },
+    "record_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Loan application id when a status lookup ran.",
+      "title": "Record Id"
+    },
+    "escalation_recommended": {
+      "default": false,
+      "description": "True when the escalation score is above cutoff.",
+      "title": "Escalation Recommended",
+      "type": "boolean"
+    },
+    "confidence": {
+      "default": 0.0,
+      "description": "Top-1 retrieval similarity.",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "guardrail_flags": {
+      "description": "Guardrails that fired on this turn.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Guardrail Flags",
+      "type": "array"
+    }
+  },
+  "required": [
+    "answer",
+    "answer_type",
+    "grounded"
+  ],
+  "title": "SupportResponse",
+  "type": "object"
+}
+
+Response Composer model response_format = SupportResponse
+
+every crew response validated against the schema in code:
+
+  Q: What are the KYC rules?
+  {
+    "answer": "Every Cred applicant must complete KYC with one proof of identity, one proof of address and one recent photograph before any account or loan is activated. A Cred joint account may be held by up to four holders, each of whom must complete KYC independently before the account is activated. [source: KB-004, KB-011]",
+    "answer_type": "policy",
+    "grounded": true,
+    "citations": [
+      "KB-004",
+      "KB-011"
+    ],
+    "tools_used": [
+      "search_loan_policy_kb"
+    ],
+    "record_id": null,
+    "escalation_recommended": false,
+    "confidence": 0.5133,
+    "guardrail_flags": []
+  }
+
+  Q: What is the status of CRED-LN-0009?
+  {
+    "answer": "Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-014, KB-005, KB-010]",
+    "answer_type": "policy_and_status",
+    "grounded": true,
+    "citations": [
+      "KB-014",
+      "KB-005",
+      "KB-010"
+    ],
+    "tools_used": [
+      "search_loan_policy_kb",
+      "check_loan_application_status"
+    ],
+    "record_id": "CRED-LN-0009",
+    "escalation_recommended": true,
+    "confidence": 0.4449,
+    "guardrail_flags": []
+  }
+
+  Q: Which stock should I buy tomorrow?
+  {
+    "answer": "I don't know. I could not find anything in the Cred policy knowledge base that supports an answer to this question, so I am not going to guess. Please rephrase the question or contact a Cred support specialist.",
+    "answer_type": "refusal",
+    "grounded": false,
+    "citations": [],
+    "tools_used": [
+      "search_loan_policy_kb"
+    ],
+    "record_id": null,
+    "escalation_recommended": false,
+    "confidence": 0.1481,
+    "guardrail_flags": []
+  }
+
+a non-conforming response is rejected:
+  ValidationError: 3 validation errors for SupportResponse
+
+the same schema drives the MockLLM's structured output directly:
+  {"answer":"Sample.","answer_type":"policy","grounded":true,"citations":["KB-001"],"tools_used":[],"record_id":null,"escalation_recommended":false,"confidence":0.61,"guardrail_flags":[]}
+  validates: True

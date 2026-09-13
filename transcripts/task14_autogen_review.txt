@@ -1,0 +1,51 @@
+
+##############################################################################
+# TASK 14 - AUTOGEN REVIEW STAGE ON SAMPLE QUERIES
+##############################################################################
+team: RoundRobinGroupChat participants=['Policy_Compliance_Reviewer', 'Final_Editor'] max_turns=2
+Final_Editor output_content_type=ReviewVerdict; team custom_message_types=[StructuredMessage[ReviewVerdict]]
+==============================================================================
+TASK 14 - AUTOGEN REVIEW STAGE (RoundRobinGroupChat, max_turns=2)
+==============================================================================
+Each case runs a real sample query through the CrewAI crew. The Response
+Composer's draft plus the retrieved context go to the review team. In the
+revise cases a deliberately ungrounded sentence is planted into the draft first.
+
+--- case: approve unchanged ---
+  query          : Is there a prepayment penalty if I foreclose my loan early?
+  composer draft : Part-prepayment is free up to 25 percent of the outstanding principal in any twelve-month window, and amounts above that are charged at the applicable foreclosure rate. Fixed-rate Personal and Business Loans attract a 3 percent foreclosure charge on the outstanding principal if closed within the first 12 months, dropping to 2 percent between months 13 and 24 and to nil thereafter. Floating-rate loans taken by an individual borrower carry no prepayment or foreclosure charge at any point in the tenure. [source: KB-008]
+  approved       : True
+  reason         : Policy-Compliance-Reviewer checked all 3 sentence(s): each is supported by the retrieved Cred context (lowest support 1.0), none breaks a KB-014 support rule, and every citation is to a retrieved document. Delivered unchanged.
+  final_answer   : Part-prepayment is free up to 25 percent of the outstanding principal in any twelve-month window, and amounts above that are charged at the applicable foreclosure rate. Fixed-rate Personal and Business Loans attract a 3 percent foreclosure charge on the outstanding principal if closed within the first 12 months, dropping to 2 percent between months 13 and 24 and to nil thereafter. Floating-rate loans taken by an individual borrower carry no prepayment or foreclosure charge at any point in the tenure. [source: KB-008]
+  delivered      : Part-prepayment is free up to 25 percent of the outstanding principal in any twelve-month window, and amounts above that are charged at the applicable foreclosure rate. Fixed-rate Personal and Business Loans attract a 3 percent foreclosure charge on the outstanding principal if closed within the first 12 months, dropping to 2 percent between months 13 and 24 and to nil thereafter. Floating-rate loans taken by an individual borrower carry no prepayment or foreclosure charge at any point in the tenure. [source: KB-008]
+  chat           : 3 messages, stop_reason='Maximum number of turns 2 reached.'
+    [user] {"draft_answer": "Part-prepayment is free up to 25 percent of the outstanding principal in any twelve-month window, and amounts above that are charged at the applicable foreclosure rate. Fixed-rate Pe
+    [Policy_Compliance_Reviewer] COMPLIANCE_FINDING {"refusal": false, "sentences": [{"text": "Part-prepayment is free up to 25 percent of the outstanding principal in any twelve-month window, and amounts above that are charged at th
+    [Final_Editor] {"approved":true,"final_answer":"Part-prepayment is free up to 25 percent of the outstanding principal in any twelve-month window, and amounts above that are charged at the applicable foreclosure rate
+
+--- case: revise: planted ungrounded claim ---
+  query          : What is the minimum balance I must maintain in a Cred savings account?
+  planted claim  : Cred also waives the minimum balance entirely for customers who hold a Cred credit card and pays 7 percent interest on it.
+  composer draft : Cred savings accounts carry an average monthly balance requirement of INR 10,000 in metro and urban branches and INR 5,000 in semi-urban and rural ones. Cred also waives the minimum balance entirely for customers who hold a Cred credit card and pays 7 percent interest on it. [source: KB-009]
+  approved       : False
+  reason         : Policy-Compliance-Reviewer passed 1 of 2 sentence(s) and the Final-Editor revised the draft: removed "Cred also waives the minimum balance entirely for customers who hold a Cred credit card and pays 7 percent interest on it." (not supported by the retrieved context; figures absent from context: ['7']).
+  final_answer   : Cred savings accounts carry an average monthly balance requirement of INR 10,000 in metro and urban branches and INR 5,000 in semi-urban and rural ones. [source: KB-009]
+  delivered      : Cred savings accounts carry an average monthly balance requirement of INR 10,000 in metro and urban branches and INR 5,000 in semi-urban and rural ones. [source: KB-009]
+  chat           : 3 messages, stop_reason='Maximum number of turns 2 reached.'
+    [user] {"draft_answer": "Cred savings accounts carry an average monthly balance requirement of INR 10,000 in metro and urban branches and INR 5,000 in semi-urban and rural ones. Cred also waives the minimum 
+    [Policy_Compliance_Reviewer] COMPLIANCE_FINDING {"refusal": false, "sentences": [{"text": "Cred savings accounts carry an average monthly balance requirement of INR 10,000 in metro and urban branches and INR 5,000 in semi-urban a
+    [Final_Editor] {"approved":false,"final_answer":"Cred savings accounts carry an average monthly balance requirement of INR 10,000 in metro and urban branches and INR 5,000 in semi-urban and rural ones. [source: KB-0
+
+--- case: revise: planted compliance breach ---
+  query          : What is the status of CRED-LN-0005?
+  planted claim  : Your application is guaranteed to be approved and the funds will be disbursed by Friday.
+  composer draft : Application CRED-LN-0005 (Home Loan) is currently 'Under Review' for a requested amount of INR 2,552,000. It was created 24 day(s) ago and carries an escalation score of 0.4 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Checking one's own score through Cred is a soft enquiry and never affects the score. Your application is guaranteed to be approved and the funds will be disbursed by Friday. [source: KB-005, KB-014, KB-010]
+  approved       : False
+  reason         : Policy-Compliance-Reviewer passed 6 of 7 sentence(s) and the Final-Editor revised the draft: removed "Your application is guaranteed to be approved and the funds will be disbursed by Friday." (not supported by the retrieved context; breaks compliance rule 'no_approval_promises'; breaks compliance rule 'no_disbursement_date_promises').
+  final_answer   : Application CRED-LN-0005 (Home Loan) is currently 'Under Review' for a requested amount of INR 2,552,000. It was created 24 day(s) ago and carries an escalation score of 0.4 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-005, KB-014, KB-010]
+  delivered      : Application CRED-LN-0005 (Home Loan) is currently 'Under Review' for a requested amount of INR 2,552,000. It was created 24 day(s) ago and carries an escalation score of 0.4 against a cutoff of 0.4333. This application is below the escalation cutoff and is progressing on the normal service track. Cred acknowledges the dispute within 24 hours, issues a provisional credit within 7 working days where the claim is prima facie valid, and completes the investigation within 45 days for domestic transactions and 90 days for cross-border ones. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. Checking one's own score through Cred is a soft enquiry and never affects the score. [source: KB-005, KB-014, KB-010]
+  chat           : 3 messages, stop_reason='Maximum number of turns 2 reached.'
+    [user] {"draft_answer": "Application CRED-LN-0005 (Home Loan) is currently 'Under Review' for a requested amount of INR 2,552,000. It was created 24 day(s) ago and carries an escalation score of 0.4 against 
+    [Policy_Compliance_Reviewer] COMPLIANCE_FINDING {"refusal": false, "sentences": [{"text": "Application CRED-LN-0005 (Home Loan) is currently 'Under Review' for a requested amount of INR 2,552,000.", "keep": true, "support": 1.0, 
+    [Final_Editor] {"approved":false,"final_answer":"Application CRED-LN-0005 (Home Loan) is currently 'Under Review' for a requested amount of INR 2,552,000. It was created 24 day(s) ago and carries an escalation score
+==============================================================================

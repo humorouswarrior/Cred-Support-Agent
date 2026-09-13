@@ -1,0 +1,50 @@
+
+##############################################################################
+# TASK 2 - KNOWLEDGE BASE (data/knowledge_base/*.md)
+##############################################################################
+========================================================================
+CRED KNOWLEDGE BASE
+========================================================================
+documents: 14 (minimum 12)
+topics covered: 14
+missing required topics: none
+
+sentence counts per document (must be 2-5):
+  KB-001 loan_eligibility_by_type         4
+  KB-002 emi_calculation_rules            4
+  KB-003 credit_card_fee_structure        4
+  KB-004 kyc_document_requirements        4
+  KB-005 fraud_dispute_resolution         4
+  KB-006 account_closure_process          4
+  KB-007 interest_rate_slabs              4
+  KB-008 prepayment_penalty_rules         4
+  KB-009 minimum_balance_requirements     4
+  KB-010 credit_score_impact_factors      4
+  KB-011 joint_account_rules              4
+  KB-012 nri_account_eligibility          4
+  KB-013 loan_application_lifecycle       4
+  KB-014 escalation_policy                4
+
+  [PASS] at_least_12_documents
+  [PASS] all_required_topics_covered
+  [PASS] every_doc_2_to_5_sentences
+  [PASS] doc_ids_unique
+
+ALL CHECKS PASSED: True
+========================================================================
+
+document files:
+  data/knowledge_base/KB-001_loan_eligibility_by_type.md
+  data/knowledge_base/KB-002_emi_calculation_rules.md
+  data/knowledge_base/KB-003_credit_card_fee_structure.md
+  data/knowledge_base/KB-004_kyc_document_requirements.md
+  data/knowledge_base/KB-005_fraud_dispute_resolution.md
+  data/knowledge_base/KB-006_account_closure_process.md
+  data/knowledge_base/KB-007_interest_rate_slabs.md
+  data/knowledge_base/KB-008_prepayment_penalty_rules.md
+  data/knowledge_base/KB-009_minimum_balance_requirements.md
+  data/knowledge_base/KB-010_credit_score_impact_factors.md
+  data/knowledge_base/KB-011_joint_account_rules.md
+  data/knowledge_base/KB-012_nri_account_eligibility.md
+  data/knowledge_base/KB-013_loan_application_lifecycle.md
+  data/knowledge_base/KB-014_escalation_policy.md

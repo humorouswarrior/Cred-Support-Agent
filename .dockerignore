@@ -1,0 +1,11 @@
+# Keep the image independent of whatever is on the building machine.
+.venv*/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+artifacts/
+models/
+.git/
+.env
+.env.*
+Cred_Capstone_Task_Summary.txt

@@ -1,0 +1,80 @@
+
+##############################################################################
+# TASK 5 - CHUNKING STRATEGY EVALUATION (document-level precision/recall)
+##############################################################################
+==============================================================================
+TASK 5 - CHUNKING STRATEGY EVALUATION (document-level, top_k=3)
+==============================================================================
+chunk inventory:
+  fixed_overlap    chunks=47   avg_chars=210.8   range=68-239
+  sentence         chunks=28   avg_chars=288.4   range=223-379
+
+--- fixed_overlap  (collection: cred_kb_fixed_overlap) ---
+  Q: What documents are required to complete KYC for a Cred loan?
+     relevant docs      : ['KB-004']
+     retrieved chunks   : ['KB-004::fixed_overlap::00', 'KB-001::fixed_overlap::00', 'KB-013::fixed_overlap::00']
+     -> parent docs     : ['KB-004', 'KB-001', 'KB-013'] (deduplicated)
+     correct            : ['KB-004']
+     precision = 1/3 = 0.3333     recall = 1/1 = 1.0     F1 = 0.5
+  Q: How is the EMI calculated on a Cred personal loan?
+     relevant docs      : ['KB-002']
+     retrieved chunks   : ['KB-002::fixed_overlap::00', 'KB-002::fixed_overlap::02', 'KB-010::fixed_overlap::02']
+     -> parent docs     : ['KB-002', 'KB-010'] (deduplicated)
+     correct            : ['KB-002']
+     precision = 1/2 = 0.5     recall = 1/1 = 1.0     F1 = 0.6667
+  Q: Is there a prepayment penalty if I foreclose my loan early?
+     relevant docs      : ['KB-008']
+     retrieved chunks   : ['KB-008::fixed_overlap::01', 'KB-008::fixed_overlap::02', 'KB-008::fixed_overlap::00']
+     -> parent docs     : ['KB-008'] (deduplicated)
+     correct            : ['KB-008']
+     precision = 1/1 = 1.0     recall = 1/1 = 1.0     F1 = 1.0
+  Q: What is the minimum balance I must maintain in a Cred savings account?
+     relevant docs      : ['KB-009']
+     retrieved chunks   : ['KB-009::fixed_overlap::00', 'KB-001::fixed_overlap::00', 'KB-002::fixed_overlap::00']
+     -> parent docs     : ['KB-009', 'KB-001', 'KB-002'] (deduplicated)
+     correct            : ['KB-009']
+     precision = 1/3 = 0.3333     recall = 1/1 = 1.0     F1 = 0.5
+  Q: If my card transaction is under fraud review, what happens to my pending loan?
+     relevant docs      : ['KB-005', 'KB-014']
+     retrieved chunks   : ['KB-005::fixed_overlap::02', 'KB-014::fixed_overlap::00', 'KB-013::fixed_overlap::01']
+     -> parent docs     : ['KB-005', 'KB-014', 'KB-013'] (deduplicated)
+     correct            : ['KB-005', 'KB-014']
+     precision = 2/3 = 0.6667     recall = 2/2 = 1.0     F1 = 0.8
+  MEAN precision=0.5667  recall=1.0  F1=0.6933
+
+--- sentence  (collection: cred_kb_sentence) ---
+  Q: What documents are required to complete KYC for a Cred loan?
+     relevant docs      : ['KB-004']
+     retrieved chunks   : ['KB-004::sentence::00', 'KB-001::sentence::00', 'KB-011::sentence::00']
+     -> parent docs     : ['KB-004', 'KB-001', 'KB-011'] (deduplicated)
+     correct            : ['KB-004']
+     precision = 1/3 = 0.3333     recall = 1/1 = 1.0     F1 = 0.5
+  Q: How is the EMI calculated on a Cred personal loan?
+     relevant docs      : ['KB-002']
+     retrieved chunks   : ['KB-002::sentence::00', 'KB-002::sentence::01', 'KB-007::sentence::00']
+     -> parent docs     : ['KB-002', 'KB-007'] (deduplicated)
+     correct            : ['KB-002']
+     precision = 1/2 = 0.5     recall = 1/1 = 1.0     F1 = 0.6667
+  Q: Is there a prepayment penalty if I foreclose my loan early?
+     relevant docs      : ['KB-008']
+     retrieved chunks   : ['KB-008::sentence::01', 'KB-008::sentence::00', 'KB-011::sentence::01']
+     -> parent docs     : ['KB-008', 'KB-011'] (deduplicated)
+     correct            : ['KB-008']
+     precision = 1/2 = 0.5     recall = 1/1 = 1.0     F1 = 0.6667
+  Q: What is the minimum balance I must maintain in a Cred savings account?
+     relevant docs      : ['KB-009']
+     retrieved chunks   : ['KB-009::sentence::00', 'KB-010::sentence::01', 'KB-001::sentence::00']
+     -> parent docs     : ['KB-009', 'KB-010', 'KB-001'] (deduplicated)
+     correct            : ['KB-009']
+     precision = 1/3 = 0.3333     recall = 1/1 = 1.0     F1 = 0.5
+  Q: If my card transaction is under fraud review, what happens to my pending loan?
+     relevant docs      : ['KB-005', 'KB-014']
+     retrieved chunks   : ['KB-005::sentence::01', 'KB-014::sentence::00', 'KB-013::sentence::00']
+     -> parent docs     : ['KB-005', 'KB-014', 'KB-013'] (deduplicated)
+     correct            : ['KB-005', 'KB-014']
+     precision = 2/3 = 0.6667     recall = 2/2 = 1.0     F1 = 0.8
+  MEAN precision=0.4667  recall=1.0  F1=0.6267
+
+RECOMMENDATION: fixed_overlap
+  Deploy fixed_overlap: on the same five queries it measured mean precision 0.5667 and F1 0.6933, against 0.4667 and 0.6267 for sentence. Mean recall was 1.0 for fixed_overlap and 1.0 for sentence, so precision is what separates them: the smaller windows more often return a second chunk of the correct document instead of an unrelated one.
+==============================================================================

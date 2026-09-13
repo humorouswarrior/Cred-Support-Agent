@@ -1,0 +1,60 @@
+
+##############################################################################
+# TASK 1 - DETERMINISTIC LOAN APPLICATION DATASET (dataset.py)
+##############################################################################
+========================================================================
+CRED LOAN APPLICATION DATASET - deterministic profile
+========================================================================
+seed                 : 20240917
+total records        : 48
+amount range (INR)   : 82,000 - 4,868,000
+
+per-category counts:
+  Auto Loan           11
+  Business Loan        7
+  Education Loan       8
+  Home Loan            9
+  Personal Loan       13
+
+per-status counts:
+  Approved             8
+  Disbursed            7
+  Rejected             8
+  Submitted           11
+  Under Review        14
+
+flagged for fraud review: 10/48 = 20.83%  (required band: 10%-30%)
+days_since_created   : p50=14.0  p80=26.0  p90=29.0
+
+structural checks:
+  [PASS] at_least_40_records
+  [PASS] all_required_categories_present
+  [PASS] every_category_at_least_3
+  [PASS] all_required_statuses_present
+  [PASS] every_status_at_least_1
+  [PASS] fraud_pct_within_10_to_30
+  [PASS] amounts_within_declared_range
+  [PASS] days_within_0_to_30
+  [PASS] record_ids_unique
+
+ALL CHECKS PASSED: True
+========================================================================
+
+reproducibility contract:
+  seed             : 20240917
+  category weights : {'Personal Loan': 0.34, 'Auto Loan': 0.22, 'Home Loan': 0.18, 'Education Loan': 0.14, 'Business Loan': 0.12}
+  status weights   : {'Under Review': 0.3, 'Submitted': 0.24, 'Approved': 0.2, 'Rejected': 0.14, 'Disbursed': 0.12}
+  amount range INR : (50000, 5000000)
+  per-category INR : {'Personal Loan': (50000, 1500000), 'Auto Loan': (150000, 2000000), 'Home Loan': (1200000, 5000000), 'Education Loan': (100000, 2500000), 'Business Loan': (300000, 5000000)}
+
+regenerated from the same seed is identical: True
+
+first 8 generated records:
+  {'record_id': 'CRED-LN-0001', 'category': 'Personal Loan', 'status': 'Submitted', 'loan_amount_inr': 119000, 'days_since_created': 9, 'flagged_for_fraud_review': False}
+  {'record_id': 'CRED-LN-0002', 'category': 'Personal Loan', 'status': 'Disbursed', 'loan_amount_inr': 631000, 'days_since_created': 6, 'flagged_for_fraud_review': False}
+  {'record_id': 'CRED-LN-0003', 'category': 'Personal Loan', 'status': 'Approved', 'loan_amount_inr': 1230000, 'days_since_created': 14, 'flagged_for_fraud_review': False}
+  {'record_id': 'CRED-LN-0004', 'category': 'Home Loan', 'status': 'Under Review', 'loan_amount_inr': 2112000, 'days_since_created': 27, 'flagged_for_fraud_review': False}
+  {'record_id': 'CRED-LN-0005', 'category': 'Home Loan', 'status': 'Under Review', 'loan_amount_inr': 2552000, 'days_since_created': 24, 'flagged_for_fraud_review': False}
+  {'record_id': 'CRED-LN-0006', 'category': 'Home Loan', 'status': 'Rejected', 'loan_amount_inr': 3644000, 'days_since_created': 27, 'flagged_for_fraud_review': False}
+  {'record_id': 'CRED-LN-0007', 'category': 'Auto Loan', 'status': 'Approved', 'loan_amount_inr': 1941000, 'days_since_created': 26, 'flagged_for_fraud_review': False}
+  {'record_id': 'CRED-LN-0008', 'category': 'Auto Loan', 'status': 'Approved', 'loan_amount_inr': 216000, 'days_since_created': 23, 'flagged_for_fraud_review': False}

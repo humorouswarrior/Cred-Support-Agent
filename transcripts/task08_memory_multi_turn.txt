@@ -1,0 +1,28 @@
+
+##############################################################################
+# TASK 8a - SESSION MEMORY: MULTI-TURN, STATE CARRIED (session 'member-alpha')
+##############################################################################
+InMemoryChatMessageHistory + RunnableWithMessageHistory, keyed by session_id.
+
+  USER  : What is the status of my loan application CRED-LN-0009?
+  memory: history_len=0  carried_record_id=None
+          question the crew received: 'What is the status of my loan application CRED-LN-0009?'
+  AGENT : Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. A Cred loan application moves through five states: Submitted, Under Review, Approved or Rejected, and finally Disbursed. [source: KB-013]
+
+  USER  : Is that one escalated?
+  memory: history_len=2  carried_record_id=CRED-LN-0009
+          question the crew received: 'Is that one escalated (application CRED-LN-0009)?'
+  AGENT : Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. Cred support escalates a loan application when it is flagged for fraud review or when it has been ageing in the queue beyond the service window for its stage. The EMI shown at application time is indicative and is refreshed on the sanction letter once the final rate is locked. An ageing application without a fraud flag is escalated to the underwriting supervisor once it passes the 80th percentile of current queue age. [source: KB-014, KB-002]
+
+  USER  : And how much was it for?
+  memory: history_len=4  carried_record_id=CRED-LN-0009
+          question the crew received: 'And how much was it for (application CRED-LN-0009)?'
+  AGENT : Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270,000. It was created 24 day(s) ago and carries an escalation score of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so it is flagged for manual review by a Cred specialist. Cred prices each product in three credit bands derived from the applicant's bureau score. Cred credit cards carry a joining fee of INR 500 and an annual fee of INR 999, and the annual fee is waived when the cardholder spends INR 2,00,000 or more in the preceding membership year. Cred computes the equated monthly instalment using the standard reducing-balance formula EMI = P * r * (1 + r)^n / ((1 + r)^n - 1), where P is the sanctioned principal, r is the monthly interest rate, and n is the tenure in months. [source: KB-007, KB-003, KB-002]
+
+  messages stored for 'member-alpha': 6
+    [human] What is the status of my loan application CRED-LN-0009?
+    [ai] Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270
+    [human] Is that one escalated?
+    [ai] Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270
+    [human] And how much was it for?
+    [ai] Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR 1,270

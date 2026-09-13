@@ -1,0 +1,49 @@
+
+##############################################################################
+# TASK 6 - check_loan_application_status WITH A DESIGNED ESCALATION SCORE
+##############################################################################
+========================================================================
+ESCALATION SCORE DESIGN
+========================================================================
+formula: escalation_score = 0.5 * flagged_for_fraud_review + 0.5 * (min(days_since_created, 30) / 30)
+p80(days_since_created) = 26.0
+threshold = 0.5 * (p80(days_since_created)=26.0 / 30) = 0.4333
+records above threshold: 15/48 (31.25%)  [flagged=10, unflagged=5]
+score range across dataset: 0.0 - 1.0
+
+sample lookups:
+  CRED-LN-0001   found=True  status=Submitted     amount=  119,000 score=0.15    escalate=False
+  CRED-LN-0007   found=True  status=Approved      amount=1,941,000 score=0.4333  escalate=False
+  CRED-LN-0042   found=True  status=Disbursed     amount=  854,000 score=0.0     escalate=False
+  CRED-LN-9999   found=False status=Not Found     amount=        0 score=0.0     escalate=False
+========================================================================
+
+full return payload for one record:
+{
+  "record_id": "CRED-LN-0009",
+  "found": true,
+  "status": "Under Review",
+  "loan_amount_inr": 1270000,
+  "escalation_score": 0.9,
+  "escalation_threshold": 0.4333,
+  "escalation_recommended": true,
+  "category": "Auto Loan",
+  "days_since_created": 24,
+  "flagged_for_fraud_review": true,
+  "formula": "escalation_score = 0.5 * flagged_for_fraud_review + 0.5 * (min(days_since_created, 30) / 30)"
+}
+
+escalation distribution across the generated dataset:
+{
+  "formula": "escalation_score = 0.5 * flagged_for_fraud_review + 0.5 * (min(days_since_created, 30) / 30)",
+  "p80_days_since_created": 26.0,
+  "threshold": 0.4333,
+  "threshold_derivation": "0.5 * (p80(days_since_created)=26.0 / 30)",
+  "total_records": 48,
+  "above_threshold": 15,
+  "above_threshold_pct": 31.25,
+  "flagged_above_threshold": 10,
+  "unflagged_above_threshold": 5,
+  "min_score": 0.0,
+  "max_score": 1.0
+}

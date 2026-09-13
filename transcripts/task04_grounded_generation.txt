@@ -1,0 +1,89 @@
+
+##############################################################################
+# TASK 4a - THRESHOLD CALIBRATION (measured, not preset)
+##############################################################################
+==============================================================================
+THRESHOLD CALIBRATION (measured, not preset)
+==============================================================================
+embedding backend: sentence-transformers/all-MiniLM-L6-v2
+
+--- strategy: fixed_overlap (collection cred_kb_fixed_overlap) ---
+  IN-SCOPE top-1 cosine similarity:
+    0.6108  What documents are required to complete KYC for a Cred loan?
+    0.6943  How is the EMI calculated on a Cred personal loan?
+    0.6516  Is there a prepayment penalty if I foreclose my loan early?
+    0.8023  What is the minimum balance I must maintain in a Cred savings account?
+    0.7596  Am I eligible for an NRE account if I live abroad?
+    0.6252  What interest rate applies to a home loan with a high credit score?
+  OUT-OF-SCOPE top-1 cosine similarity:
+    0.2002  What is the best recipe for Hyderabadi biryani?
+    0.1252  Who won the football World Cup in 2014?
+    0.1344  How do I train a convolutional neural network on satellite imagery?
+    0.1110  What is the weather forecast for Bengaluru this weekend?
+  min(in-scope)=0.6108   max(out-of-scope)=0.2002   separated=True
+  => THRESHOLD = 0.4055
+  The two clusters are cleanly separated: the weakest in-scope query scores 0.6108 and the strongest out-of-scope query scores 0.2002. The threshold is placed at the midpoint of that gap, 0.4055, so every measured in-scope query is answered and every measured out-of-scope query falls back to 'I don't know'.
+
+--- strategy: sentence (collection cred_kb_sentence) ---
+  IN-SCOPE top-1 cosine similarity:
+    0.5645  What documents are required to complete KYC for a Cred loan?
+    0.6838  How is the EMI calculated on a Cred personal loan?
+    0.5906  Is there a prepayment penalty if I foreclose my loan early?
+    0.8034  What is the minimum balance I must maintain in a Cred savings account?
+    0.7435  Am I eligible for an NRE account if I live abroad?
+    0.5919  What interest rate applies to a home loan with a high credit score?
+  OUT-OF-SCOPE top-1 cosine similarity:
+    0.1633  What is the best recipe for Hyderabadi biryani?
+    0.0978  Who won the football World Cup in 2014?
+    0.1063  How do I train a convolutional neural network on satellite imagery?
+    0.0918  What is the weather forecast for Bengaluru this weekend?
+  min(in-scope)=0.5645   max(out-of-scope)=0.1633   separated=True
+  => THRESHOLD = 0.3639
+  The two clusters are cleanly separated: the weakest in-scope query scores 0.5645 and the strongest out-of-scope query scores 0.1633. The threshold is placed at the midpoint of that gap, 0.3639, so every measured in-scope query is answered and every measured out-of-scope query falls back to 'I don't know'.
+
+active threshold (default strategy): 0.4055
+written to: artifacts/threshold_calibration.json
+==============================================================================
+
+##############################################################################
+# TASK 4b - GROUNDED GENERATION (5 in-scope + 1 out-of-scope)
+##############################################################################
+==============================================================================
+GROUNDED GENERATION UNDER MOCK_LLM
+==============================================================================
+collection: fixed_overlap (recommended by Task 5)   threshold in force: 0.4055
+generation model: mock-llm/cred-grounded-generation-v1 (MOCK_LLM, answers only from retrieved context)
+
+Q: What documents are required to complete KYC for a Cred loan?
+   top1_similarity=0.6108  in_scope=True
+   citations=['KB-004']
+   A: Every Cred applicant must complete KYC with one proof of identity, one proof of address and one recent photograph before any account or loan is activated. [source: KB-004]
+
+Q: How is the EMI calculated on a Cred personal loan?
+   top1_similarity=0.6943  in_scope=True
+   citations=['KB-002']
+   A: Cred computes the equated monthly instalment using the standard reducing-balance formula EMI = P * r * (1 + r)^n / ((1 + r)^n - 1), where P is the sanctioned principal, r is the monthly interest rate, and n is the tenure in months. [source: KB-002]
+
+Q: Is there a prepayment penalty if I foreclose my loan early?
+   top1_similarity=0.6516  in_scope=True
+   citations=['KB-008']
+   A: Part-prepayment is free up to 25 percent of the outstanding principal in any twelve-month window, and amounts above that are charged at the applicable foreclosure rate. Fixed-rate Personal and Business Loans attract a 3 percent foreclosure charge on the outstanding principal if closed within the first 12 months, dropping to 2 percent between months 13 and 24 and to nil thereafter. Floating-rate loans taken by an individual borrower carry no prepayment or foreclosure charge at any point in the tenure. [source: KB-008]
+
+Q: What is the minimum balance I must maintain in a Cred savings account?
+   top1_similarity=0.8023  in_scope=True
+   citations=['KB-009']
+   A: Cred savings accounts carry an average monthly balance requirement of INR 10,000 in metro and urban branches and INR 5,000 in semi-urban and rural ones. [source: KB-009]
+
+Q: If my card transaction is under fraud review, what happens to my pending loan?
+   top1_similarity=0.6387  in_scope=True
+   citations=['KB-005']
+   A: The card or account is placed under a fraud review hold while the investigation runs, which pauses any linked loan disbursement. [source: KB-005]
+
+--- deliberate out-of-scope query (must trigger fallback) ---
+Q: What is the best recipe for Hyderabadi biryani?
+   top1_similarity=0.2002  in_scope=False
+   refused=True
+   A: I don't know. I could not find anything in the Cred policy knowledge base that supports an answer to this question, so I am not going to guess. Please rephrase the question or contact a Cred support specialist.
+
+cache stats: {'entries': 6, 'hits': 0, 'misses': 6, 'lookups': 6, 'hit_rate': 0.0, 'generation_calls': 6, 'retrieval_calls': 6, 'llm_calls': 5}
+==============================================================================

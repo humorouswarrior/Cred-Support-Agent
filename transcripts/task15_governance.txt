@@ -1,0 +1,59 @@
+
+##############################################################################
+# TASK 15 - APPLICATION LAYER: LEAST AUTONOMY
+##############################################################################
+Only the Lookup Agent may call check_loan_application_status, and that rule is enforced in two independent places from one permission table, TOOL_AUTONOMY_POLICY. At build time, every tool is attached to an agent through assert_tool_wiring, which raises AutonomyViolation if the agent's role is not listed for that tool, so a crew that gives the lookup tool to the Retrieval Agent or the Response Composer cannot be constructed; in the shipped crew the tool is wired to the Lookup Agent alone and the Composer holds no tools at all. At run time, a CrewAI before-tool-call hook consults the same table with the agent that is actually executing and blocks the call if that agent does not own the tool, so even a crew mis-wired by bypassing the build-time check cannot reach the record: the attempt is refused by the framework before the tool function runs, and the violation is recorded. The guard does not depend on any agent's prompt or on the model choosing to behave, because neither check can be influenced by what an agent says.
+
+permission matrix (tool x agent role):
+  check_loan_application_status    Retrieval Agent    permitted=False
+  check_loan_application_status    Lookup Agent       permitted=True
+  check_loan_application_status    Response Composer  permitted=False
+  search_loan_policy_kb            Retrieval Agent    permitted=True
+  search_loan_policy_kb            Lookup Agent       permitted=False
+  search_loan_policy_kb            Response Composer  permitted=False
+
+1) the lookup tool is wired to the Lookup Agent only:
+   Retrieval Agent    tools=['search_loan_policy_kb']
+   Lookup Agent       tools=['check_loan_application_status']
+   Response Composer  tools=[]
+
+2) wiring it to any other agent is refused at build time:
+   Response Composer: BLOCKED - Least-autonomy policy violation: agent role 'Response Composer' may not hold tool 'check_loan_application_status'. Permitted roles: ['Lookup Agent'].
+   Retrieval Agent: BLOCKED - Least-autonomy policy violation: agent role 'Retrieval Agent' may not hold tool 'check_loan_application_status'. Permitted roles: ['Lookup Agent'].
+
+3) a deliberately mis-wired crew is blocked at run time by the framework:
+   Response Composer tools after mis-wiring : ['check_loan_application_status']
+   tool executions that actually ran        : ['search_loan_policy_kb', 'check_loan_application_status']
+   recorded violation: {"tool": "check_loan_application_status", "attempted_by": "Response Composer", "permitted_roles": ["Lookup Agent"], "action": "blocked"}
+   the lookup tool ran 1 time(s), for the Lookup Agent; the Composer's attempt
+   was refused before the tool function executed.
+
+##############################################################################
+# TASK 15 - APPLICATION LAYER: RISK CLASSIFICATION
+##############################################################################
+scheme:
+  Low    summarization, transcription
+  Medium code generation, customer support tickets
+  High   medical data, hiring decisions, financial data
+
+RISK LEVEL: High
+
+This system is classified High risk. By its function alone it would look like the scheme's Medium category, customer support, but the scheme classifies a system by the data it handles as well as the task it performs, and the highest category that applies governs. This agent works directly with financial data: it reads loan application records carrying requested amounts, application status and fraud-review flags, it states lending policy on interest rates, fees and penalties that a member may act on financially, and its input can carry PAN, Aadhaar and bank account numbers. A wrong rate, an invented fee, a leaked identifier or a disclosed fraud flag would each cause real financial or personal harm, which is exactly what places financial data in the High category. The controls in this repository are the ones a High classification demands, and they are designed on that basis rather than used as grounds for a lower rating: answers must clear a measured retrieval threshold and an output groundedness gate, every draft is reviewed by an independent Autogen team before delivery, fixed-format identifiers are masked before the model, the memory or the log sees them, the lookup tool is read-only and restricted to one agent, and every request runs under a hard token and cost budget. Those controls reduce the likelihood of harm; they do not change the fact that the system handles financial data, so the classification stays High.
+
+##############################################################################
+# TASK 15 - RUNTIME LAYER: PER-REQUEST TOKEN / COST BUDGET
+##############################################################################
+caps: {"max_request_tokens": 600, "max_total_tokens": 12000, "max_cost_inr": 2.0}
+
+normal request admitted; usage = {"llm_calls": 7, "prompt_tokens": 3818, "completion_tokens": 1253, "total_tokens": 5071, "cost_inr": 0.76065, "exhausted": false, "caps": {"max_request_tokens": 600, "max_total_tokens": 12000, "max_cost_inr": 2.0}}
+
+oversized simulated request (5440 characters):
+  REJECTED - Request rejected: 1360 estimated prompt tokens exceeds the per-request cap of 600.
+  detail: {"reason": "request_token_cap", "estimated_tokens": 1360, "cap": 600}
+  model calls made: 0; tokens spent: 0
+
+running cap reached mid-crew (cap lowered to 800 tokens to force it):
+  ABORTED - Request already over budget at 1034 tokens; no further model calls are permitted.
+    charged: {"label": "cred-mock-llm", "prompt_tokens": 126, "completion_tokens": 31, "running_total": 157}
+    charged: {"label": "cred-mock-llm", "prompt_tokens": 126, "completion_tokens": 751, "running_total": 1034}
+  ledger sealed, further calls refused unbilled: exhausted=True

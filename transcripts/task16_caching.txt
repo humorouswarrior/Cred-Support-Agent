@@ -1,0 +1,23 @@
+
+##############################################################################
+# TASK 16 - RESPONSE CACHE FOR THE GROUNDED-GENERATION STEP
+##############################################################################
+key = normalised query text (casefold, collapse whitespace, strip end punctuation)
+
+call                    cached  vector retrievals  LLM calls         ms
+first ask               False   1                  1             24.618
+identical repeat        True    1                  1              0.010
+different surface form  True    1                  1              0.005
+
+BEFORE/AFTER: three asks cost 1 vector retrieval and 1 grounded-generation LLM
+call; the two cache hits avoided 2 retrievals and 2 LLM calls.
+identical answers on every call: True
+cache stats: {'entries': 1, 'hits': 2, 'misses': 1, 'lookups': 3, 'hit_rate': 0.6667, 'generation_calls': 1, 'retrieval_calls': 1, 'llm_calls': 1}
+
+a different question is a genuine miss: cached=False, LLM calls now 2
+
+--- the same cache on the live crew path ---
+  first  : retrieval cached=False  vector retrievals=1 generation LLM calls=1
+  repeat : retrieval cached=True  vector retrievals=1 generation LLM calls=1
+  The Retrieval Agent's tool served the repeat from cache. Application lookups are
+  never cached, because a record can change between two identical questions.
