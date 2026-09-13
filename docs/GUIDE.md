@@ -119,7 +119,7 @@ The project runs on **Linux, macOS and Windows**, from wherever you clone it. Pi
 * **Route A — native setup** (steps 1–3): a normal Python virtual environment. Works
   on Linux (x86-64 or ARM), Windows 10/11 and Apple-Silicon Macs.
 * **Route B — Docker**: nothing to install except Docker. Identical on every machine,
-  and the only option on an Intel Mac, where PyTorch no longer publishes wheels.
+  and the fallback if a machine has no PyTorch wheel.
 
 ### Step 1 — Get the code
 
@@ -405,13 +405,15 @@ Will I be charged a penalty if I foreclose it early?
 **Expect:**
 
 ```
-agent> Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of
-INR 1,270,000. ... This application is above the escalation cutoff, so it is flagged for manual
-review by a Cred specialist. Fixed-rate Personal and Business Loans attract a 3 percent foreclosure
-charge on the outstanding principal if closed within the first 12 months, dropping to 2 percent
-between months 13 and 24 and to nil thereafter. Part-prepayment is free up to 25 percent of the
-outstanding principal in any twelve-month window, and amounts above that are charged at the
-applicable foreclosure rate. [source: KB-008]
+agent> Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested amount of INR
+       1,270,000. ... This application is above the escalation cutoff, so it is flagged for
+       manual review by a Cred specialist.
+
+       Fixed-rate Personal and Business Loans attract a 3 percent foreclosure charge on the
+       outstanding principal if closed within the first 12 months, dropping to 2 percent between
+       months 13 and 24 and to nil thereafter. Part-prepayment is free up to 25 percent of the
+       outstanding principal in any twelve-month window, and amounts above that are charged at
+       the applicable foreclosure rate. [source: KB-008]
   answer_type            policy_and_status
   resolved_question      Will I be charged a penalty if I foreclose it early (application CRED-LN-0009)?
   tools_used             ['search_loan_policy_kb', 'check_loan_application_status']
@@ -804,8 +806,8 @@ Install one (step 2), or point at an existing one with
 The path must be a 3.12 or 3.13 interpreter. Check with `/path/to/python --version`.
 
 **Installation fails with "no matching distribution" for `torch`.**
-The machine has no PyTorch wheel: an Intel Mac, or a Linux older than glibc 2.28. Use
-Route B (Docker).
+The machine has no PyTorch wheel for this platform (for example a Linux older than
+glibc 2.28). Use Route B (Docker).
 
 **`RuntimeError: The embedding model 'all-MiniLM-L6-v2' is not in …/models`.**
 Setup's model step didn't finish, or `models/` was deleted. Rerun `python3 bootstrap.py`

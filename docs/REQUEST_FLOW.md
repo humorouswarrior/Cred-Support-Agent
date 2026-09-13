@@ -530,7 +530,9 @@ and the gate finds 68 of 68 content words supported.
 > Application CRED-LN-0009 (Auto Loan) is currently 'Under Review' for a requested
 > amount of INR 1,270,000. It was created 24 days ago and carries an escalation score
 > of 0.9 against a cutoff of 0.4333. This application is above the escalation cutoff, so
-> it is flagged for manual review by a Cred specialist. Fixed-rate Personal and Business
+> it is flagged for manual review by a Cred specialist.
+>
+> Fixed-rate Personal and Business
 > Loans attract a 3 percent foreclosure charge on the outstanding principal if closed
 > within the first 12 months, dropping to 2 percent between months 13 and 24 and to nil
 > thereafter. Part-prepayment is free up to 25 percent of the outstanding principal in
